@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Label xmlns:mx="http://www.adobe.com/2006/mxml" text="{data.Name}" color="{data.TextColor}" toolTip=" " toolTipCreate="createTip(event)" >
+	<mx:Script><![CDATA[
+		import d2tool;
+		import mx.events.ToolTipEvent;
+		import mx.managers.ToolTipManager;
+    	import mx.controls.ToolTip;
+    	public var myTip:ToolTip;
+		
+		public function createTip(event:ToolTipEvent):void {
+           	var ptt:d2tool = new d2tool();
+           	var Stats:String = "";
+           	var StatArr:Array = data.Stats.split(";");
+           	var Mods:String = "";
+           	var ModArr:Array = data.Mods.split(";");
+           	
+           	ptt.title = data.Name;
+           	if(data.Name != data.BaseItem) {
+           		ptt.typeText = data.BaseItem;
+           	}
+           	
+           	for each (var tmpStat:String in StatArr) {
+           		Stats += tmpStat + "\n";
+           	}
+           	
+           	if (data.Flags.indexOf("Ethereal") >= 0) {
+           		Stats += "Ethereal" + "\n";
+           	}
+           	
+           	for each (var tmpMod:String in ModArr) {
+           		Mods += tmpMod + "\n";
+           	}
+           	
+           	ptt.statText = Stats;
+           	ptt.modText = Mods;
+           	
+           	ptt.setStyle("titleStyleName",data.Quality + "Title");
+           	event.toolTip = ptt;
+		}
+
+	]]></mx:Script>
+</mx:Label>

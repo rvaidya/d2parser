@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication title="Diablo 2 - Parse Viewer" xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#303030, #0F0F0F]" initialize="init()" width="794" height="666" titleIcon="@Embed(source='icons/icon16.png')" styleName="d2font" horizontalScrollPolicy="off" verticalScrollPolicy="off" >
+	<mx:Style source="style/style.css"/>
+	<mx:Script>
+	    <![CDATA[
+	    	import mx.containers.GridItem;
+	    	import mx.containers.GridRow;
+	    	import mx.controls.RadioButton;
+	    	import d2parser.Character;
+	    	import d2parser.Item;
+	    	import mx.events.CollectionEvent;
+	    	import mx.utils.StringUtil;
+	    	import mx.collections.ArrayCollection;
+	    	import d2label;
+	    	import d2tool;
+	    	import mx.events.ToolTipEvent;
+			import mx.managers.ToolTipManager;
+    		import mx.controls.ToolTip;
+	    	public var images:Dictionary = new Dictionary();
+	    	public var sizeX:Dictionary = new Dictionary();
+	    	public var sizeY:Dictionary = new Dictionary();
+	    	[Bindable]
+			public var charCollection:ArrayCollection = new ArrayCollection;
+			[Bindable]
+			public var imageCollection:ArrayCollection = new ArrayCollection;
+	    	[Bindable]
+			public var itemCollection:ArrayCollection = new ArrayCollection;
+			[Bindable]
+            public var XMLFile:XML;
+			[Bindable]
+			public var realmCollection:Array = [
+				{label: "West", realm: "USWest", count: 0},
+				{label: "East", realm: "USEast", count: 0},
+				{label: "Asia", realm: "Asia", count: 0},
+				{label: "Europe", realm: "Europe", count: 0}
+			];
+			public function populateCharacters():void {
+				
+			}
+
+			public var Filer:File = new File;
+			public var dir:File = new File;
+			public var natPath:String = "C:/";
+			
+			public function reload():void {
+				charCollection.removeAll();
+				itemCollection.removeAll();
+				itemCollection.filterFunction=processFilter;
+				charCollection.filterFunction=charFilter;
+				itemCollection.addEventListener(CollectionEvent.COLLECTION_CHANGE,updateTitle);
+				Filer.browseForDirectory("Locate your log file directory. Default: 'd2plog' Folder in your Diablo 2 Directory");
+				charCollection.refresh();
+				itemCollection.refresh();
+			}
+			
+			public function init():void {
+				//LOAD PATH
+				readDir();
+				Filer.nativePath = natPath;
+				Filer.addEventListener(Event.SELECT, dirSelected);
+				Filer.browseForDirectory("Locate your log file directory. Default: 'd2plog' Folder in your Diablo 2 Directory");
+				
+				itemCollection.filterFunction=processFilter;
+				charCollection.filterFunction=charFilter;
+				itemCollection.addEventListener(CollectionEvent.COLLECTION_CHANGE,updateTitle);
+				charCollection.refresh();
+				itemCollection.refresh();
+				var fh:File = File.applicationDirectory.resolvePath("res/items.csv");
+				//var fh:File = new File("res/items.csv")
+				var file:FileStream = new FileStream();
+				file.open(fh,FileMode.READ);
+				var str:String = file.readMultiByte(file.bytesAvailable, "iso-8859-1");
+				var lines:Array = str.split("\n");
+				var i:int = 0;
+				var j:int = 0;
+				for(i=0;i<lines.length;i++)
+				{
+					if(lines[i] == "") continue;
+					var vals:Array = lines[i].split(",");
+					images[vals[0]] = vals[3];
+					sizeX[vals[0]] = parseInt(vals[4]);
+					sizeY[vals[0]] = parseInt(vals[5]);
+					images[vals[1]] = vals[3];
+					sizeX[vals[1]] = parseInt(vals[4]);
+					sizeY[vals[1]] = parseInt(vals[5]);
+					images[vals[2]] = vals[3];
+					sizeX[vals[2]] = parseInt(vals[4]);
+					sizeY[vals[2]] = parseInt(vals[5]);	
+				}
+			}
+			
+			private function dirSelected(e:Event):void {
+				saveDir();
+				natPath = Filer.nativePath;
+				var myArr:Array = Filer.getDirectoryListing();
+				var selArr:Array = new Array();
+				for (var i:String in myArr) {
+				    var tmpArr:Array = myArr[i].name.split(".");
+				    if(tmpArr.length == 3)
+				    {
+				    	var s:String = readAccountName(myArr[i]);
+				    	var nf:File = myArr[i].resolvePath("../" + tmpArr[0] + "." + s + "." + tmpArr[1] + "." + tmpArr[2]);
+				    	myArr[i].moveTo(nf, true);
+				    	myArr[i] = nf;
+				    	tmpArr = myArr[i].name.split(".");
+				    }
+				    if(tmpArr[3] == "xml" && myArr[i].size != 0) {
+				    	selArr.push(selArr.length);
+				    	readFile(myArr[i], tmpArr[1]);
+				    }
+				}
+				charList.selectedIndices = selArr;
+				for each (var tmpItem:Object in realmCollection) {
+					tmpItem.label = tmpItem.label + " (" + tmpItem.count.toString() + ")";
+					if(tmpItem.count > 0) {
+						realmList.selectedItem = tmpItem;
+					}
+				}
+				charCollection.refresh();
+				itemCollection.refresh();
+			}
+			
+			public function updateTitle(e:Event):void {
+				this.title = "Diablo 2 Parse Viewer - "+itemCollection.length+" items found";
+			}
+			
+			public function processFilter(item:Item):Boolean{
+                var result:Boolean=true;
+                if(txtName == null) return true;
+                if(txtName.text != "") {
+					if(item.Name.toLowerCase().search(txtName.text.toLowerCase()) == -1) {
+						result = false;
+					}
+                }
+                
+                if(txtType.text != "") {
+					if(item.BaseItem.toLowerCase().search(txtType.text.toLowerCase()) == -1) {
+						result = false;
+					}
+                }
+                
+                if(txtChar.text != "") {
+					if(item.Character.toLowerCase().search(txtChar.text.toLowerCase()) == -1) {
+						result = false;
+					}
+                }
+                if(qualityRadio != null) {
+	                if(qualityRadio.selectedValue != "None Selected" && qualityRadio.selectedValue != null)
+	                {
+	                	var quality:String = item.Quality;
+	                	if(quality == "Superior") quality = "Normal,Superior";
+	                	if(item.Runeword != "") quality = "Runeword";
+	                	if(quality.indexOf(qualityRadio.selectedValue.toString()) < 0) result = false;
+	                }
+                }
+                if(equippedFlag != null) {
+	                if(equippedFlag.selected == true && item.Flags.indexOf("Equipped") < 0) result = false;
+	                if(etherealFlag.selected == true && item.Flags.indexOf("Ethereal") < 0) result = false;
+	                if(socketedFlag.selected == true && item.Flags.indexOf("Socketed") < 0) result = false;
+	                if(brokenFlag.selected == true && item.Flags.indexOf("Broken") < 0) result = false;
+	                if(identifiedFlag.selected == true && item.Flags.indexOf("Identified") < 0) result = false;
+	                if(unidentifiedFlag.selected == true && item.Flags.indexOf("Identified") >= 0) result = false;
+                }
+                
+                if (Number(item.Level) < stepIlvlMin.value || Number(item.Level) > stepIlvlMax.value){
+                    result = false;
+                }
+                
+                var isOwned:Boolean = false;
+                
+                
+                if (item.Realm != realmList.selectedItem.realm){
+                	result = false;
+                }
+                return result;
+            }
+            
+            public function processFlagsRadio():void {
+            	itemCollection.refresh();
+            }
+			
+			public function processQualityRadio():void {
+				var i:int = 0;
+            	for(i=0; i<qualityRadio.numRadioButtons ; i++)
+            	{
+            		var radio:RadioButton = qualityRadio.getRadioButtonAt(i);
+            		if(qualityRadio.selectedValue == radio.label) radio.setStyle("color","#007777");
+            		else radio.setStyle("color","#FFFFFF");
+            	}
+            	itemCollection.refresh();
+			}
+			
+			public function charFilter(item:Character):Boolean{
+                var result:Boolean=false;
+                
+                if(realmList.selectedItem) {
+	                if(realmList.selectedItem.realm.toString() == item.Realm) {
+	                	result = true;
+	                }
+                }
+                return result;
+            }
+            public function createTip(event:ToolTipEvent):void {
+	           	var ptt:d2tool = new d2tool();
+	           	var image:Image = Image(event.target);
+	           	var item:Item = itemCollection[parseInt(image.name)];
+	           	ptt.statText = image.name;
+	           	ptt.modText = "";
+	           	event.toolTip = ptt;
+	           	
+	           	var Stats:String = "";
+	           	var StatArr:Array = item.Stats.split(";");
+	           	var Mods:String = "";
+	           	var ModArr:Array = item.Mods.split(";");
+	           	
+	           	ptt.title = item.Name;
+	           	if(item.Name != item.BaseItem) {
+	           		ptt.typeText = item.BaseItem;
+	           	}
+	           	
+	           	for each (var tmpStat:String in StatArr) {
+	           		Stats += tmpStat + "\n";
+	           	}
+	           	
+	           	if (item.Flags.indexOf("Ethereal") >= 0) {
+	           		Stats += "Ethereal" + "\n";
+	           	}
+	           	
+	           	for each (var tmpMod:String in ModArr) {
+	           		Mods += tmpMod + "\n";
+	           	}
+	           	
+	           	ptt.statText = Stats;
+	           	ptt.modText = Mods;
+	           	
+	           	ptt.setStyle("titleStyleName",item.Quality + "Title");
+	           	event.toolTip = ptt;
+			}
+			public function createBasicTip(item:Item):String {
+	           	var Stats:String = "";
+	           	var StatArr:Array = item.Stats.split(";");
+	           	var Mods:String = "";
+	           	var ModArr:Array = item.Mods.split(";");
+	           	
+	           	var Title:String = item.Name;
+	           	
+	           	for each (var tmpStat:String in StatArr) {
+	           		Stats += tmpStat + "\n";
+	           	}
+	           	
+	           	if (item.Flags.indexOf("Ethereal") >= 0) {
+	           		Stats += "Ethereal" + "\n";
+	           	}
+	           	
+	           	for each (var tmpMod:String in ModArr) {
+	           		Mods += tmpMod + "\n";
+	           	}
+	           	var out:String = item.Name + "\n" + item.BaseItem + "\n\n";
+	           	out += Stats + "\n";
+	           	out += Mods + "\n";
+	           	return out;
+			}
+			public function enableInventory():void {
+				charList.selectionMode = "singleRow";
+			}
+			public function processInvSetRadio():void {
+				var i:int = 0;
+            	for(i=0; i<invSetRadio.numRadioButtons ; i++)
+            	{
+            		var radio:RadioButton = invSetRadio.getRadioButtonAt(i);
+            		if(invSetRadio.selectedValue == radio.label) radio.setStyle("color","#007777");
+            		else radio.setStyle("color","#FFFFFF");
+            	}
+            	updateInventory();
+			}
+			public function updateInventory():void {
+				if(invName != null) {
+					invName.setStyle("color","#FFFFFF");
+					var char:Character = Character(charList.selectedItem);
+                	invName.text = "Name: " + char.Name;
+                	invLevel.text = "Level: " + char.Level;
+                	invUsed.text = "Used Space: " + char.UsedSpace;
+                	invClass.text = "Class: " + char.Class;
+                	
+                	// EQUIPPED
+                	var Inventory:ArrayCollection = char.Inventory;
+                	var i:int = 0;
+                	invHelm.source = "";
+                	invAmulet.source = "";
+                	invArmor.source = "";
+                	invLeft.source = "";
+                	invRight.source = "";
+                	invBelt.source = "";
+                	invLeftRing.source = "";
+                	invRightRing.source = "";
+                	invBoots.source = "";
+                	invGloves.source = "";
+                	for(i=0;i<imageCollection.length;i++) {
+                		invCanvas.removeChild(DisplayObject(imageCollection.getItemAt(i)));
+                	}
+                	imageCollection.removeAll();
+                	for(i=0;i<Inventory.length;i++) {
+                		var item:Item = Item(Inventory.getItemAt(i));
+                		if(item.Location == "Helm") {
+                			if(item.OwnerType == "" || item.OwnerType == "Player" && invSetm.selected == false) setStaticImage(invHelm,item);
+                			if(item.OwnerType == "NPC" && invSetm.selected == true) setStaticImage(invHelm, item);      
+                		}
+                		if(item.Location == "Amulet") setStaticImage(invAmulet,item);
+                		if(item.Location == "Armor") {
+                			if(item.OwnerType == "" || item.OwnerType == "Player" && invSetm.selected == false) setStaticImage(invArmor,item);
+                			if(item.OwnerType == "NPC" && invSetm.selected == true) setStaticImage(invArmor, item);                		
+                		}
+                		if(item.Location == "LeftHand") {
+                			if(item.OwnerType == "" || item.OwnerType == "Player" && invSet1.selected == true) setStaticImage(invLeft,item);
+                			if(item.OwnerType == "NPC" && invSetm.selected == true) setStaticImage(invLeft, item);    
+                		}
+                		if(item.Location == "RightHand") {
+                			if(item.OwnerType == "" || item.OwnerType == "Player" && invSet1.selected == true) setStaticImage(invRight,item);
+                			if(item.OwnerType == "NPC" && invSetm.selected == true) setStaticImage(invRight, item);
+                		}
+                		if(item.Location == "LeftHandSwitch" && invSet2.selected == true) setStaticImage(invLeft,item);
+                		if(item.Location == "RightHandSwitch" && invSet2.selected == true) setStaticImage(invRight,item);
+                		if(item.Location == "Belt") setStaticImage(invBelt,item);
+    					if(item.Location == "LeftHandRing") setStaticImage(invLeftRing,item);
+                		if(item.Location == "RightHandRing") setStaticImage(invRightRing,item);
+                		if(item.Location == "Boots") setStaticImage(invBoots,item);
+                		if(item.Location == "Gloves") setStaticImage(invGloves,item);
+                		if(item.Container != "") {
+                			var x:int = item.X;
+                			var y:int = item.Y;
+                			var image:Image = new Image();
+                			image.name = item.Index.toString();
+                			image.source = getImage(item);
+                			image.toolTip = createBasicTip(item);
+                			image.width = sizeX[item.BaseItem]*29;
+                			image.height = sizeY[item.BaseItem]*29;
+                			image.setStyle("horizontalAlign","center");
+                			image.setStyle("verticalAlign","middle");
+                			image.scaleContent = false;
+                			if(item.Flags.indexOf("Ethereal") >= 0) {
+                				image.alpha = 0.5;
+                			}
+                			image.autoLoad = true;
+                			if(item.Container == "Inventory") {
+                				image.x = 483 + 29*x;
+                				image.y = 409 + 29*y;
+                			}
+                			if(item.Container == "Stash") {
+                				image.x = 217 + 29*x;
+                				image.y = 234 + 29*y;
+                			}
+                			if(item.Container == "Cube") {
+                				image.x = 35 + 29*x;
+                				image.y = 163 + 29*y;
+                			}
+                			invCanvas.addChild(image);
+                			imageCollection.addItem(image);
+                		}
+                	}
+                }
+			}
+			public function setStaticImage(image:Image, item:Item):void {
+				image.name = item.Index.toString();
+                image.source = getImage(item);
+                image.toolTip = createBasicTip(item);
+                if(item.Flags.indexOf("Ethereal") >= 0) {
+                	image.alpha = 0.5;
+                }
+			}
+			public function getImage(item:Item):String {
+				var src:String = "res/items/";
+				var dict:String = images[item.BaseItem];
+				if(dict == null) {
+					switch(item.BaseItem) {
+						case "Amulet": {
+							dict = "amu" + item.Image + ".gif";
+							break;
+						}
+						case "Ring": {
+							dict = "ring" + item.Image + ".gif";
+							break;
+						}
+						case "Jewel": {
+							dict = "jewel" + item.Image + ".gif";
+							break;
+						}
+						case "Small Charm": {
+							dict = "smallcharm" + item.Image + ".gif";
+							break;
+						}
+						case "Large Charm": {
+							dict = "mediumcharm" + item.Image + ".gif";
+							break;
+						}
+						case "Grand Charm": {
+							dict = "largecharm" + item.Image + ".gif";
+							break;
+						}
+						default: {
+							dict = item.BaseItem.toLowerCase().replace(" ","") + ".gif";
+							break;
+						}
+					}
+					if(item.BaseItem.indexOf("Rune") >= 0) {
+						dict = "rune" + item.BaseItem.split(" ")[0] + ".gif";
+					}
+				}
+				return src + dict;
+			}
+			public function readFile(file:File, owner:String):void {
+				var fileStream:FileStream = new FileStream();
+				fileStream.open(file, FileMode.READ);
+				var content:String = fileStream.readUTFBytes(fileStream.bytesAvailable);
+				//var content:String = fileStream.readMultiByte(fileStream.bytesAvailable, "iso-8859-1");
+				XMLFile = new XML(content.slice(1));
+				for each (var tmpItem:Object in realmCollection) {
+					if(XMLFile.@realm == tmpItem.realm) {
+						tmpItem.count += 1;
+					}
+				}
+				var char:Character = new Character;
+				char.Name = XMLFile.@owner;
+				char.Account = XMLFile.@account;
+				char.Realm = XMLFile.@realm;
+				char.Level = XMLFile.@level;
+				char.Class = XMLFile.@classe;
+				charCollection.addItem(char);
+				char.UsedSpace = 0;
+				for each (var tmpNode:XML in XMLFile.children()) {
+					var item:Item = readItem(tmpNode, XMLFile.@owner, XMLFile.@account, XMLFile.@realm);
+					char.Inventory.addItem(item);
+					if(item.Container != "") char.UsedSpace += item.SizeX * item.SizeY;
+				}
+				fileStream.close();
+			}
+			
+			public function readAccountName(file:File):String {
+				var fileStream:FileStream = new FileStream();
+				fileStream.open(file, FileMode.READ);
+				var content:String = fileStream.readUTFBytes(fileStream.bytesAvailable);
+				XMLFile = new XML(content.slice(1));
+				for each (var tmpItem:Object in realmCollection) {
+					if(XMLFile.@realm == tmpItem.realm) {
+						tmpItem.count += 1;
+					}
+				}
+				fileStream.close();
+				return XMLFile.@account;
+			}
+			
+			public function readDir():void {
+				dir = File.applicationStorageDirectory.resolvePath("dir.ini");
+				if(dir.exists) {
+					var dirStream:FileStream = new FileStream();
+					dirStream.open(dir, FileMode.READ);
+					var content:String = dirStream.readUTFBytes(dirStream.bytesAvailable);
+					natPath = content;
+				}else{
+					var createFile:File = File.applicationStorageDirectory.resolvePath("dir.ini");
+					var createStream:FileStream = new FileStream();
+					createStream.open(createFile, FileMode.WRITE);
+					createStream.writeUTFBytes("C:/");
+					createStream.close();
+				}
+			}
+			
+			public function saveDir():void {
+				var updateFile:File = File.applicationStorageDirectory.resolvePath("dir.ini");
+				var updateStream:FileStream = new FileStream();
+				updateStream.open(updateFile, FileMode.WRITE);
+				updateStream.writeUTFBytes(Filer.nativePath);
+				updateStream.close();
+			}
+			
+			public function readItem(node:XML, owner:String, account:String, realm:String):Item {
+				var item:Item = new Item;
+				item.Name = node.@name;
+				item.Realm = realm;
+				item.Character = owner;
+				item.OwnerType = node.ownertype;
+				item.Id = node.id;
+				item.Color = node.color;
+				item.BaseItem = node.baseitem;
+				item.Level = node.level;
+				item.Quality = node.quality;
+				item.Flags = node.flags;
+				item.Stats = node.stats;
+				item.Mods = node.mods;
+				item.Runeword = node.runeword;
+				item.RunewordId = node.runewordid;
+				item.RunewordParam = node.runewordparam;
+				item.Prefix = node.prefix;
+				item.PrefixVar = node.prefixvar;
+				item.Suffix = node.suffix;
+				item.SuffixVar = node.suffixvar;
+				item.Image = node.image;
+				item.Location = node.location;
+				item.Container = node.container;
+				item.X = node.X;
+				item.Y = node.Y;
+				item.SizeX = sizeX[item.BaseItem];
+				item.SizeY = sizeY[item.BaseItem];
+				if(item.Flags.indexOf("Compact") >= 0) {
+					item.SizeX = 1;
+					item.SizeY = 1;				
+				}
+				if(item.BaseItem == "Small Charm") {
+					item.SizeX = 1;
+					item.SizeY= 1;
+				}
+				if(item.BaseItem == "Large Charm") {
+					item.SizeX = 1;
+					item.SizeY = 2;
+				}
+				if(item.BaseItem == "Grand Charm") {
+					item.SizeX = 1;
+					item.SizeY = 3;
+				}
+				item.TextColor = 0xc6c8c7;
+				if(item.Quality == "") {
+					item.Quality = "Normal";
+				}
+				switch(item.Quality) {
+					case "Unique":
+						item.TextColor = 0x948064;
+						break;
+					case "Crafted":
+						item.TextColor = 0xc38144;
+						break;
+					case "Rare":
+						item.TextColor = 0xd8b864;
+						break;
+					case "Magic":
+						item.TextColor = 0x5050ac;
+						break;
+					case "Set":
+						item.TextColor = 0x18fc00;
+						break;
+					case "Runeword":
+						item.TextColor = 0x505050;
+						break;
+					case "Superior":
+						item.TextColor = 0x505050;
+						break;
+					case "Inferior":
+						item.TextColor = 0x505050;
+						break;
+				}
+				if(item.Runeword != "")
+				{
+					item.TextColor = 0x948064;
+					/*var name:String = item.Runeword.charAt(0);
+					var i:int;
+					for (i = 1; i < item.Runeword.length; i++) {
+					    if(item.Runeword.charCodeAt(i) < 97 && item.Runeword.charAt(i-1) != ' ') {
+					    	name += " " + item.Runeword.charAt(i);
+					    }
+					    else name += item.Runeword.charAt(i);
+					}
+
+					item.Name = name;
+					*/
+					item.Name = item.Runeword;
+				}
+				item.Index = itemCollection.length;
+				itemCollection.addItem(item);
+				return item;
+			}
+		]]>
+	</mx:Script>
+	<mx:TabBar x="0" y="0" width="792" height="32" dataProvider="viewstack1" styleName="d2font" selectedTabTextStyleName="selectedTab" id="tabBar">
+	</mx:TabBar>
+	<mx:ViewStack x="0" y="40" id="viewstack1" width="792" height="598" styleName="d2font">
+		<mx:Canvas label="Characters" width="100%" height="100%" styleName="d2font">
+			<mx:Panel x="10" y="10" width="156" height="578" layout="absolute" title="Realm" styleName="d2font">
+				<mx:ComboBox x="10" y="10" width="116" dataProvider="{realmCollection}" styleName="d2font" id="realmList" editable="false" enabled="true" change="charCollection.refresh(); itemCollection.refresh();"></mx:ComboBox>
+				<mx:Label x="0" y="436" text="Created By"/>
+				<mx:Label x="0" y="452" text="bimf"/>
+				<mx:Label x="0" y="466" text="Buey"/>
+				<mx:Label x="0" y="496" text="Version 1.07" id="versionLabel"/>
+				<mx:Button x="10" y="44" label="Reload" click="reload();"/>
+			</mx:Panel>
+			<mx:AdvancedDataGrid x="174" y="10" id="charList" designViewDataType="flat" width="614" height="578" selectionMode="singleRow" enabled="true" dataProvider="{charCollection}" click="updateInventory();" change="updateInventory();" selectedIndex="0">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Name" dataField="Name"/>
+					<mx:AdvancedDataGridColumn headerText="Class" dataField="Class"/>
+					<mx:AdvancedDataGridColumn headerText="Account" dataField="Account"/>
+					<mx:AdvancedDataGridColumn headerText="Level" dataField="Level"/>
+					<mx:AdvancedDataGridColumn headerText="Used Space" dataField="UsedSpace"/>
+				</mx:columns>
+			</mx:AdvancedDataGrid>
+		
+		</mx:Canvas>
+		<mx:Canvas label="Item Search" width="100%" height="100%">
+			<mx:Panel x="10" y="10" width="197" height="578" layout="absolute" title="Search Filters" styleName="d2font">
+				<mx:Accordion x="10" y="10" width="157" height="514">
+					<mx:Canvas label="Text Filters" width="100%" height="100%">
+						<mx:Label x="28" y="10" text="Item Name" styleName="d2font" fontWeight="normal"/>
+						<mx:TextInput x="10" y="40" id="txtName" editable="true" enabled="true" displayAsPassword="false" styleName="d2font" change="itemCollection.refresh();" color="#202020" width="135"/>
+						<mx:Label x="31" y="84" text="Item Type" styleName="d2font"/>
+						<mx:TextInput x="10" y="114" id="txtType" displayAsPassword="false" editable="true" enabled="true" styleName="d2font" change="itemCollection.refresh();" color="#202020" width="135"/>
+						<mx:Label x="31" y="160.95" text="Item Level" styleName="d2font"/>
+						<mx:NumericStepper x="10" y="207.95" minimum="0" value="0" maximum="99" stepSize="1" id="stepIlvlMin" styleName="d2font" enabled="true" color="#202020" change="itemCollection.refresh();" width="56"/>
+						<mx:NumericStepper x="93" y="207.95" value="99" minimum="1" maximum="99" stepSize="1" id="stepIlvlMax" enabled="true" styleName="d2font" color="#202020" change="itemCollection.refresh();" width="52"/>
+						<mx:Label x="63" y="190.95" text="to" styleName="d2font"/>
+						<mx:Label x="0" y="250" text="Character Name" styleName="d2font"/>
+						<mx:TextInput x="10" y="280" change="itemCollection.refresh();" displayAsPassword="false" editable="true" enabled="true" id="txtChar" styleName="d2font" color="#202020" width="135"/>
+					</mx:Canvas>
+					<mx:Canvas label="Item Quality" width="100%" height="100%">
+						<mx:RadioButtonGroup id="qualityRadio"/>
+						<mx:RadioButton x="10" y="10" label="None Selected" groupName="qualityRadio" color="#007777" click="processQualityRadio();" selected="true"/>
+						<mx:RadioButton x="10" y="36" label="Normal" groupName="qualityRadio" click="processQualityRadio();"/>
+						<mx:RadioButton x="10" y="62" label="Superior" groupName="qualityRadio" click="processQualityRadio();"/>
+						<mx:RadioButton x="10" y="88" label="Magic" groupName="qualityRadio" click="processQualityRadio();"/>
+						<mx:RadioButton x="10" y="114" label="Rare" groupName="qualityRadio" click="processQualityRadio();"/>
+						<mx:RadioButton x="10" y="140" label="Crafted" groupName="qualityRadio" click="processQualityRadio();"/>
+						<mx:RadioButton x="10" y="166" label="Set" groupName="qualityRadio" click="processQualityRadio();"/>
+						<mx:RadioButton x="10" y="192" label="Unique" groupName="qualityRadio" click="processQualityRadio();"/>
+						<mx:RadioButton x="10" y="218" label="Runeword" groupName="qualityRadio" click="processQualityRadio();"/>
+
+					</mx:Canvas>
+					<mx:Canvas label="Item Flags" width="100%" height="100%">
+						<mx:RadioButtonGroup id="flagsRadio"/>
+						<mx:CheckBox x="10" y="10" label="Equipped" id="equippedFlag" click="processFlagsRadio();"/>
+						<mx:CheckBox x="10" y="42" label="Ethereal" id="etherealFlag" click="processFlagsRadio();"/>
+						<mx:CheckBox x="10" y="74" label="Socketed" id="socketedFlag" click="processFlagsRadio();"/>
+						<mx:CheckBox x="10" y="106" label="Broken" id="brokenFlag" click="processFlagsRadio();"/>
+						<mx:CheckBox x="10" y="138" label="Unidentified" id="unidentifiedFlag" click="processFlagsRadio();"/>
+						<mx:CheckBox x="10" y="170" label="Identified" id="identifiedFlag" click="processFlagsRadio();"/>
+					</mx:Canvas>
+				</mx:Accordion>
+			</mx:Panel>
+			<mx:AdvancedDataGrid x="215" y="10" id="itemList" designViewDataType="flat" width="573" height="578" selectionMode="none" dataProvider="{itemCollection}" styleName="d2font" enabled="true">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Name" dataField="Name" itemRenderer="d2label" />
+					<mx:AdvancedDataGridColumn headerText="Type" dataField="BaseItem"/>
+					<mx:AdvancedDataGridColumn headerText="Level" dataField="Level"/>
+					<mx:AdvancedDataGridColumn headerText="Char" dataField="Character"/>
+				</mx:columns>
+			</mx:AdvancedDataGrid>
+		</mx:Canvas>
+		<mx:Canvas label="Inventory View" width="100%" height="100%" id="invCanvas">
+			<mx:Image x="140" y="149" autoLoad="true" source="res/inventory.jpg" scaleContent="false"/>
+			<mx:Panel x="10" y="10" width="778" height="111" layout="absolute" styleName="d2font" title="Character Information" initialize="enableInventory();">
+				<mx:Text x="10" y="10" text="Not Loaded" id="invName" color="#990000"/>
+				<mx:Text x="10" y="40" text="Level: " id="invLevel"/>
+				<mx:Text x="361" y="10" text="Select Character in Character List" id="invUsed"/>
+				<mx:Text x="361" y="40" text="Equipment Set:" id="invSet"/>
+				<mx:Label x="118" y="40" text="Class:" id="invClass"/>
+				<mx:RadioButtonGroup id="invSetRadio"/>
+				<mx:RadioButton x="509" y="39.7" label="I" groupName="invSetRadio" selected="true" color="#007777" id="invSet1" click="processInvSetRadio();"/>
+				<mx:RadioButton x="548" y="38.7" label="II" groupName="invSetRadio" height="26" id="invSet2" click="processInvSetRadio();"/>
+				<mx:RadioButton x="593" y="37.7" label="Mercenary" groupName="invSetRadio" height="27.000004" id="invSetm" click="processInvSetRadio();"/>
+			</mx:Panel>
+			<mx:Image x="483" y="199" id="invRight" autoLoad="true" width="61" height="115" scaleContent="false" horizontalAlign="center" verticalAlign="middle"/>
+			<mx:Image x="714" y="198" id="invLeft" autoLoad="true" width="59" height="116" scaleContent="false" horizontalAlign="center" verticalAlign="middle"/>
+			<mx:Image x="597" y="329" id="invBelt" autoLoad="true" width="60" scaleContent="false" horizontalAlign="center" verticalAlign="middle" height="29"/>
+			<mx:Image x="483" y="329" id="invGloves" autoLoad="true" width="57" height="60" scaleContent="false" horizontalAlign="center" verticalAlign="middle"/>
+			<mx:Image x="714" y="328" id="invBoots" autoLoad="true" width="56" height="59" scaleContent="false" horizontalAlign="center" verticalAlign="middle"/>
+			<mx:Image x="557" y="329" id="invRightRing" autoLoad="true" name="0" scaleContent="false" horizontalAlign="center" verticalAlign="middle" width="29" height="29"/>
+			<mx:Image x="672" y="330" id="invLeftRing" autoLoad="true" name="0" scaleContent="false" horizontalAlign="center" verticalAlign="middle" width="29" height="29"/>
+			<mx:Image x="598" y="227" id="invArmor" autoLoad="true" width="56" height="85" scaleContent="false" horizontalAlign="center" verticalAlign="middle"/>
+			<mx:Image x="671" y="184" id="invAmulet" autoLoad="true" name="0" scaleContent="false" horizontalAlign="center" verticalAlign="middle" width="29" height="29"/>
+			<mx:Image x="598" y="153" id="invHelm" autoLoad="true" width="60" height="60" scaleContent="false" horizontalAlign="center" verticalAlign="middle" initialize="updateInventory();"/>
+			<mx:Image x="25" y="153" source="res/cube.jpg" autoLoad="true" scaleContent="false"/>
+		</mx:Canvas>
+	</mx:ViewStack>
+</mx:WindowedApplication>
