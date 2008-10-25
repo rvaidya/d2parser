@@ -1,0 +1,4 @@
+BlueVex.dll
+D2Data.dll
+D2Packets.dll
+ETUtils.dll

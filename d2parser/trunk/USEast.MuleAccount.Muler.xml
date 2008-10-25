@@ -1,0 +1,369 @@
+<Inventory owner="Muler" classe="Assasin" level="1" account="MuleAcct" realm="USEast">
+	<Item name="Nightwing's Veil">
+		<id>2627674016</id>
+		<level>99</level>
+		<baseitem>Spired Helm</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Unique</quality>
+		<stats>Armor Class: 160;Max Durability: 40;Durability: 38;</stats>
+		<mods>Dexterity: 16;Defense Percent: 114;Lower Requirements Percent: -50;Half Freeze Duration: 1;All Skills Bonus: 2;Absorb Cold: 7;Passive Cold Mastery: 12;</mods>
+		<location>Stash</location>
+		<X>0</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Unidentified">
+		<id>1313837008</id>
+		<level>85</level>
+		<baseitem>Vampirebone Gloves</baseitem>
+		<flags>Any</flags>
+		<quality>Unique</quality>
+		<stats>Armor Class: 66;Max Durability: 14;Durability: 10;</stats>
+		<location>Stash</location>
+		<X>0</X>
+		<Y>2</Y>
+	</Item>
+	<Item name="Horizon's Tornado">
+		<id>656910312</id>
+		<level>88</level>
+		<baseitem>Scourge</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Unique</quality>
+		<stats>Max Durability: 65;Durability: 53;</stats>
+		<mods>+232% Physical Damage;Lower Requirements Percent: -20;Faster Attack Rate: 50;Slow: 20;20% Chance To Cast Level 15 Tornado on Striking;</mods>
+		<location>Stash</location>
+		<X>2</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Unidentified">
+		<id>328446964</id>
+		<level>99</level>
+		<baseitem>Vampirebone Gloves</baseitem>
+		<flags>Any</flags>
+		<quality>Unique</quality>
+		<stats>Armor Class: 66;Max Durability: 14;Durability: 8;</stats>
+		<location>Stash</location>
+		<X>0</X>
+		<Y>4</Y>
+	</Item>
+	<Item name="Tal Rasha's Howling Wind">
+		<id>164215290</id>
+		<level>99</level>
+		<baseitem>Lacquered Plate</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Set</quality>
+		<stats>Armor Class: 513;Max Durability: 55;Durability: 33;</stats>
+		<mods>Armor Class: 400;Magic Damage Reduction: 15;Fire Resist: 40;Light Resist: 40;Cold Resist: 40;Magic Find: 88;Lower Requirements Percent: -60;</mods>
+		<location>Stash</location>
+		<X>4</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Unidentified">
+		<id>82099453</id>
+		<level>88</level>
+		<baseitem>Colossus Blade</baseitem>
+		<flags>Any</flags>
+		<quality>Set</quality>
+		<stats>Max Durability: 50;Durability: 41;</stats>
+		<location>Stash</location>
+		<X>4</X>
+		<Y>3</Y>
+	</Item>
+	<Item name="Andariel's Visage">
+		<id>2456960638</id>
+		<level>99</level>
+		<baseitem>Demonhead</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Unique</quality>
+		<stats>Armor Class: 155;Max Durability: 20;Durability: 10;</stats>
+		<mods>Strength: 30;Defense Percent: 149;Fire Resist: -30;Poison Resist: 70;Max Poison Resist: 10;Life Drain Min Damage: 8;Faster Attack Rate: 20;All Skills Bonus: 2;15% Chance To Cast Level 15 PoisonNova on Get Hit;Level 3 Venom (4/20 Charges);</mods>
+		<location>Stash</location>
+		<X>2</X>
+		<Y>3</Y>
+	</Item>
+	<Item name="Unidentified">
+		<id>1228480319</id>
+		<level>99</level>
+		<baseitem>Swirling Crystal</baseitem>
+		<flags>Any</flags>
+		<quality>Unique</quality>
+		<stats>Max Durability: 50;Durability: 47;</stats>
+		<location>Stash</location>
+		<X>3</X>
+		<Y>5</Y>
+	</Item>
+	<Item name="Entrapping Grand Charm">
+		<id>3030159263</id>
+		<level>88</level>
+		<baseitem>Grand Charm</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Magic</quality>
+		<mods>+1 to Assassin Traps Skills;</mods>
+		<prefix>Entrapping</prefix>
+		<image>2</image>
+		<location>Stash</location>
+		<X>2</X>
+		<Y>5</Y>
+	</Item>
+	<Item name="Key of Hate">
+		<id>3394119631</id>
+		<level>80</level>
+		<baseitem>Key of Hate</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Normal</quality>
+		<location>Stash</location>
+		<X>0</X>
+		<Y>6</Y>
+	</Item>
+	<Item name="Key of Hate">
+		<id>4112978919</id>
+		<level>80</level>
+		<baseitem>Key of Hate</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Normal</quality>
+		<location>Inventory</location>
+		<X>0</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Powered Sparkling Ball of TheMagus">
+		<id>3935537651</id>
+		<color>22</color>
+		<level>88</level>
+		<baseitem>Sparkling Ball</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Magic</quality>
+		<stats>Max Durability: 40;Durability: 22;</stats>
+		<mods>MaxMana: 65;Faster Cast Rate: 20;+1 To Enchant;+1 To ThunderStorm;+1 To ColdMastery;+3 to Sorceress Lightning Skills;</mods>
+		<prefix>Powered</prefix>
+		<suffix>TheMagus</suffix>
+		<suffixvar>2</suffixvar>
+		<location>Inventory</location>
+		<X>0</X>
+		<Y>2</Y>
+	</Item>
+	<Item name="Atma's Scarab">
+		<id>3846808825</id>
+		<level>99</level>
+		<baseitem>Amulet</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Unique</quality>
+		<mods>Poison Resist: 75;+39 Poison Damage over 4 seconds;Attacker Takes Damage: 5;Light Radius: 3;To Hit Percent: 20;5% Chance To Cast Level 2 AmplifyDamage on Striking;</mods>
+		<image>0</image>
+		<location>Inventory</location>
+		<X>9</X>
+		<Y>3</Y>
+	</Item>
+	<Item name="Ruby Jewel">
+		<id>3802444412</id>
+		<level>88</level>
+		<baseitem>Jewel</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Magic</quality>
+		<mods>Fire Resist: 30;</mods>
+		<prefix>Ruby</prefix>
+		<prefixvar>7</prefixvar>
+		<image>1</image>
+		<location>Inventory</location>
+		<X>9</X>
+		<Y>2</Y>
+	</Item>
+	<Item name="Key of Terror">
+		<id>1901214014</id>
+		<level>82</level>
+		<baseitem>Key of Terror</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Normal</quality>
+		<location>Inventory</location>
+		<X>9</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Tal Rasha's Fire-Spun Cloth">
+		<id>950607007</id>
+		<level>95</level>
+		<baseitem>Mesh Belt</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Set</quality>
+		<stats>Armor Class: 38;Max Durability: 16;Durability: 8;</stats>
+		<mods>Dexterity: 20;MaxMana: 30;Magic Find: 14;Lower Requirements Percent: -20;Damage To Mana: 37;</mods>
+		<location>Inventory</location>
+		<X>7</X>
+		<Y>3</Y>
+	</Item>
+	<Item name="Key of Destruction">
+		<id>2354351695</id>
+		<level>95</level>
+		<baseitem>Key of Destruction</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Normal</quality>
+		<location>Inventory</location>
+		<X>1</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Sapphire Jewel of Truth">
+		<id>3593086759</id>
+		<level>85</level>
+		<baseitem>Jewel</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Magic</quality>
+		<mods>Cold Resist: 27;Faster Hit Recovery: 7;</mods>
+		<prefix>Sapphire</prefix>
+		<prefixvar>6</prefixvar>
+		<suffix>Truth</suffix>
+		<image>0</image>
+		<location>Inventory</location>
+		<X>8</X>
+		<Y>2</Y>
+	</Item>
+	<Item name="Key of Hate">
+		<id>4212462483</id>
+		<level>80</level>
+		<baseitem>Key of Hate</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Normal</quality>
+		<location>Inventory</location>
+		<X>8</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Crown of Thieves">
+		<id>3985279433</id>
+		<level>75</level>
+		<baseitem>Grand Crown</baseitem>
+		<flags>Identified, Ethereal, Any</flags>
+		<quality>Unique</quality>
+		<stats>Armor Class: 171;Max Durability: 26;Durability: 26;</stats>
+		<mods>Dexterity: 25;Max Life: 50;MaxMana: 35;Defense Percent: 189;Fire Resist: 33;Life Drain Min Damage: 12;Gold Find: 94;</mods>
+		<location>Inventory</location>
+		<X>1</X>
+		<Y>2</Y>
+	</Item>
+	<Item name="Key of Terror">
+		<id>3871679716</id>
+		<level>82</level>
+		<baseitem>Key of Terror</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Normal</quality>
+		<location>Inventory</location>
+		<X>2</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Unidentified">
+		<id>1935839858</id>
+		<level>84</level>
+		<baseitem>Swirling Crystal</baseitem>
+		<flags>Any, x8000000</flags>
+		<quality>Set</quality>
+		<stats>Max Durability: 50;Durability: 38;</stats>
+		<location>Inventory</location>
+		<X>7</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Doom Scarab">
+		<id>967911737</id>
+		<level>75</level>
+		<baseitem>Jewel</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Rare</quality>
+		<mods>Strength: 4;+5% Physical Damage;Fire Resist: 30;Undead Damage percent: 49;Undead To Hit: 50;</mods>
+		<prefix>Doom</prefix>
+		<suffix>Scarab</suffix>
+		<image>2</image>
+		<location>Inventory</location>
+		<X>6</X>
+		<Y>3</Y>
+	</Item>
+	<Item name="Key of Destruction">
+		<id>2363004060</id>
+		<level>95</level>
+		<baseitem>Key of Destruction</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Normal</quality>
+		<location>Inventory</location>
+		<X>3</X>
+		<Y>2</Y>
+	</Item>
+	<Item name="Verdugo's Hearty Cord">
+		<id>1181493838</id>
+		<level>99</level>
+		<baseitem>Mithril Coil</baseitem>
+		<flags>Identified, Ethereal, Any</flags>
+		<quality>Unique</quality>
+		<stats>Armor Class: 99;Max Durability: 9;Durability: 9;</stats>
+		<mods>Vitality: 40;Max Stamina: 114;Defense Percent: 127;Damage Resist: 11;Life Regen: 10;Faster Hit Recovery: 10;</mods>
+		<location>Inventory</location>
+		<X>4</X>
+		<Y>3</Y>
+	</Item>
+	<Item name="The Rising Sun">
+		<id>590746919</id>
+		<level>99</level>
+		<baseitem>Amulet</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Unique</quality>
+		<mods>+24-48 Fire Damage;Life Regen: 10;Light Radius: 4;+2 To Fire Skills;2% Chance To Cast Level 19 Meteor on Get Hit;+0.75 To AbsorbFire Per Level;</mods>
+		<image>0</image>
+		<location>Inventory</location>
+		<X>6</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Key of Terror">
+		<id>2174421651</id>
+		<level>82</level>
+		<baseitem>Key of Terror</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Normal</quality>
+		<location>Inventory</location>
+		<X>6</X>
+		<Y>1</Y>
+	</Item>
+	<Item name="Hailstone Visor">
+		<id>3503129929</id>
+		<level>87</level>
+		<baseitem>Circlet</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Rare</quality>
+		<stats>Armor Class: 25;Max Durability: 35;Durability: 22;</stats>
+		<mods>Damage Reduction: 3;Fire Resist: 31;Cold Resist: 34;+2 To Necromancer Skills;Faster Move Velocity: 10;</mods>
+		<prefix>Hailstone</prefix>
+		<suffix>Visor</suffix>
+		<location>Inventory</location>
+		<X>4</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Key of Hate">
+		<id>4167475876</id>
+		<level>80</level>
+		<baseitem>Key of Hate</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Normal</quality>
+		<location>Stash</location>
+		<X>1</X>
+		<Y>6</Y>
+	</Item>
+	<Item name="Key of Hate">
+		<id>2083729746</id>
+		<level>80</level>
+		<baseitem>Key of Hate</baseitem>
+		<flags>Identified, Any</flags>
+		<quality>Normal</quality>
+		<location>Inventory</location>
+		<X>3</X>
+		<Y>0</Y>
+	</Item>
+	<Item name="Katar">
+		<id>1041864873</id>
+		<level>1</level>
+		<baseitem>Katar</baseitem>
+		<flags>Equipped, Identified, StartItem, Any</flags>
+		<quality>Normal</quality>
+		<stats>Max Durability: 48;Durability: 48;</stats>
+		<location>RightHand</location>
+	</Item>
+	<Item name="Buckler">
+		<id>2399972436</id>
+		<level>1</level>
+		<baseitem>Buckler</baseitem>
+		<flags>Equipped, Identified, StartItem, Any</flags>
+		<quality>Normal</quality>
+		<stats>Armor Class: 5;Max Durability: 12;Durability: 12;</stats>
+		<location>LeftHand</location>
+	</Item>
+</Inventory>

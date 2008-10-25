@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="D2Parser">
+</Property><Property Name="Solution File" Value="J:\Software\Diablo 2\Redvex 3.2 2-25-08\Redvex 3.2 2-25-08\Source\D2Parser.sln">
+</Property><Property Name="User Options File" Value="J:\Software\Diablo 2\Redvex 3.2 2-25-08\Redvex 3.2 2-25-08\Source\D2Parser.suo">
+</Property><Property Name="Date" Value="Wednesday, September 24, 2008">
+</Property><Property Name="Time" Value="14:16 PM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="D2Parser.sln" Description="File successfully backed up as J:\Software\Diablo 2\Redvex 3.2 2-25-08\Redvex 3.2 2-25-08\Source\Backup\D2Parser.sln">
+</Event><Event ErrorLevel="0" Project="" Source="D2Parser.suo" Description="File successfully backed up as J:\Software\Diablo 2\Redvex 3.2 2-25-08\Redvex 3.2 2-25-08\Source\Backup\D2Parser.suo">
+</Event><Event ErrorLevel="0" Project="D2Parser" Source="D2Parser.vbproj" Description="Project file successfully backed up as J:\Software\Diablo 2\Redvex 3.2 2-25-08\Redvex 3.2 2-25-08\Source\Backup\D2Parser.vbproj">
+</Event><Event ErrorLevel="0" Project="D2Parser" Source="D2Parser.vbproj.user" Description="Project user file successfully backed up as J:\Software\Diablo 2\Redvex 3.2 2-25-08\Redvex 3.2 2-25-08\Source\Backup\D2Parser.vbproj.user">
+</Event><Event ErrorLevel="0" Project="D2Parser" Source="GameModule.vb" Description="File successfully backed up as J:\Software\Diablo 2\Redvex 3.2 2-25-08\Redvex 3.2 2-25-08\Source\Backup\GameModule.vb">
+</Event><Event ErrorLevel="0" Project="D2Parser" Source="myMod.vb" Description="File successfully backed up as J:\Software\Diablo 2\Redvex 3.2 2-25-08\Redvex 3.2 2-25-08\Source\Backup\myMod.vb">
+</Event><Event ErrorLevel="0" Project="D2Parser" Source="Struct.vb" Description="File successfully backed up as J:\Software\Diablo 2\Redvex 3.2 2-25-08\Redvex 3.2 2-25-08\Source\Backup\Struct.vb">
+</Event><Event ErrorLevel="0" Project="D2Parser" Source="REFERENCES.txt" Description="File successfully backed up as J:\Software\Diablo 2\Redvex 3.2 2-25-08\Redvex 3.2 2-25-08\Source\Backup\REFERENCES.txt">
+</Event><Event ErrorLevel="0" Project="D2Parser" Source="D2Parser.vbproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="D2Parser" Source="D2Parser.vbproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="D2Parser.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="D2Parser.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="D2Parser" Source="D2Parser.vbproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>
