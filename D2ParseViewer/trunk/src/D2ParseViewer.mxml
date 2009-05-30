@@ -16,7 +16,8 @@
 	    	import mx.events.ToolTipEvent;
 			import mx.managers.ToolTipManager;
     		import mx.controls.ToolTip;
-	    	public var images:Dictionary = new Dictionary();
+    		
+    		public var images:Dictionary = new Dictionary();
 	    	public var sizeX:Dictionary = new Dictionary();
 	    	public var sizeY:Dictionary = new Dictionary();
 	    	[Bindable]
@@ -274,8 +275,9 @@
             	updateInventory();
 			}
 			public function updateInventory():void {
-				if(invName != null) {
+				if(invName != null && char != null) {
 					invName.setStyle("color","#FFFFFF");
+					trace(char);
 					var char:Character = Character(charList.selectedItem);
                 	invName.text = "Name: " + char.Name;
                 	invLevel.text = "Level: " + char.Level;
@@ -358,6 +360,34 @@
                 		}
                 	}
                 }
+			}
+			public function updateAbout():void {
+				if(currentVersion != null && onlineVersion != null) {
+					// LOCAL
+					var fs:FileStream = new FileStream();
+					fs.open(File.applicationDirectory.resolvePath("D2ParseViewer-app.xml"), FileMode.READ);
+					var bytes:String = fs.readUTFBytes(fs.bytesAvailable);
+					fs.close();
+					var ver:String = bytes.match("<version>.*</version>")[0].replace("<version>","").replace("</version>","");
+					currentVersion.text = "Current Version: " + ver;
+					
+					// REMOTE
+					var request:URLRequest = new URLRequest("http://d2parser.googlecode.com/svn/D2ParseViewer/trunk/src/D2ParseViewer-app.xml");
+					request.method = "GET";
+					var loader:URLLoader = new URLLoader();
+					loader.addEventListener(Event.COMPLETE, versionFetchHandler);
+					loader.addEventListener(flash.events.IOErrorEvent.IO_ERROR, versionErrorHandler);
+					loader.load(request);
+				}
+			}
+			private function versionFetchHandler(e:Event):void {
+				var ver:String = e.target.data.match("<version>.*</version>")[0].replace("<version>","").replace("</version>","");
+				onlineVersion.text = "Online Version: " + ver;
+				onlineVersion.setStyle("color","white");
+			}
+			private function versionErrorHandler(e:Event):void {
+				onlineVersion.text = "Online Version: Could not Connect";
+				onlineVersion.setStyle("color","white");
 			}
 			public function setStaticImage(image:Image, item:Item):void {
 				image.name = item.Index.toString();
@@ -667,8 +697,8 @@
 				<mx:Label x="10" y="122" text="bimf" styleName="d2font"/>
 				<mx:Label x="10" y="152" text="Buey" styleName="d2font"/>
 				<mx:Label x="10" y="182" text="http://d2parser.randomshit.org" styleName="d2font"/>
-				<mx:Label x="10" y="288" text="Current Version:" styleName="d2font"/>
-				<mx:Label x="10" y="318" text="Online Version:" styleName="d2font"/>
+				<mx:Label x="10" y="288" id="currentVersion" text="Current Version: CHECKING" styleName="d2font"/>
+				<mx:Label x="10" y="318" id="onlineVersion" text="Online Version: CHECKING" styleName="d2font" initialize="updateAbout();" color="red"/>
 			</mx:Panel>
 		</mx:Canvas>
 	</mx:ViewStack>
