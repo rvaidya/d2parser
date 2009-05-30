@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+implements="mx.core.IToolTip" 
+alpha=".8" 
+horizontalAlign="center"
+borderThickness="2"
+backgroundColor="#222222"
+dropShadowEnabled="true"
+borderColor="black"
+borderStyle="solid"
+creationComplete="init()"
+shadowDistance="10" shadowDirection="right" title="test">
+<mx:Script><![CDATA[
+	[Bindable]
+	public var statText:String = "";
+	[Bindable]
+	public var modText:String = "";
+	[Bindable]
+	public var typeText:String = "";
+	public var _text:String;
+	private function init():void {
+		if(statText.length == 0) {
+			tipStats.height = 0;
+		}
+		if(modText.length == 0) {
+			tipMods.height = 0;
+		}
+		if(typeText.length == 0) {
+			tipType.height = 0;
+		}
+	}
+	public function get text():String {
+		return _text;
+	}
+	public function set text(value:String):void {
+		
+	}
+]]></mx:Script>
+
+<mx:Text id="tipType" text="{typeText}" styleName="StatTxt"/>
+<mx:Text id="tipStats" text="{statText}" styleName="StatTxt"/>
+<mx:Text id="tipMods" text="{modText}" styleName="ModsTxt"/>
+
+</mx:Panel>
