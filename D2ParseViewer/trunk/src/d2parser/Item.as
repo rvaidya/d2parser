@@ -1,5 +1,7 @@
 package d2parser
 {
+	import flash.events.IEventDispatcher;
+	
 	public class Item
 	{
 		public var Id:int;

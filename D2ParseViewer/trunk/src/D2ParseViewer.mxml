@@ -275,10 +275,10 @@
             	updateInventory();
 			}
 			public function updateInventory():void {
-				if(invName != null && char != null) {
+				if(invName != null) {
 					invName.setStyle("color","#FFFFFF");
-					trace(char);
 					var char:Character = Character(charList.selectedItem);
+					if(char == null) return;
                 	invName.text = "Name: " + char.Name;
                 	invLevel.text = "Level: " + char.Level;
                 	invUsed.text = "Used Space: " + char.UsedSpace;
@@ -365,7 +365,9 @@
 				if(currentVersion != null && onlineVersion != null) {
 					// LOCAL
 					var fs:FileStream = new FileStream();
-					fs.open(File.applicationDirectory.resolvePath("D2ParseViewer-app.xml"), FileMode.READ);
+					var f:File = File.applicationDirectory.resolvePath("D2ParseViewer-app.xml");
+					if(!f.exists) f = File.applicationDirectory.resolvePath("META-INF/AIR/application.xml");
+					fs.open(f, FileMode.READ);
 					var bytes:String = fs.readUTFBytes(fs.bytesAvailable);
 					fs.close();
 					var ver:String = bytes.match("<version>.*</version>")[0].replace("<version>","").replace("</version>","");
@@ -442,7 +444,8 @@
 				fileStream.open(file, FileMode.READ);
 				var content:String = fileStream.readUTFBytes(fileStream.bytesAvailable);
 				//var content:String = fileStream.readMultiByte(fileStream.bytesAvailable, "iso-8859-1");
-				XMLFile = new XML(content.slice(1));
+				trace(content);
+				XMLFile = new XML(content);
 				for each (var tmpItem:Object in realmCollection) {
 					if(XMLFile.@realm == tmpItem.realm) {
 						tmpItem.count += 1;
@@ -468,7 +471,7 @@
 				var fileStream:FileStream = new FileStream();
 				fileStream.open(file, FileMode.READ);
 				var content:String = fileStream.readUTFBytes(fileStream.bytesAvailable);
-				XMLFile = new XML(content.slice(1));
+				XMLFile = new XML(content);
 				for each (var tmpItem:Object in realmCollection) {
 					if(XMLFile.@realm == tmpItem.realm) {
 						tmpItem.count += 1;
