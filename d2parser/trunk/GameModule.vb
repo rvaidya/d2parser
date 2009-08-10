@@ -1,4 +1,5 @@
 Imports System.Configuration
+Imports D2Packets
 
 Public Class GameModule
     Implements BlueVex.IGameModule
@@ -6,12 +7,13 @@ Public Class GameModule
     Public WithEvents Game As BlueVex.IGame
     Public WithEvents Chat As BlueVex.IChat
     Public ItemNum As Integer = 0
-    Private InventoryOwners(200) As String
-    Private Inventory(200) As ItemStruct
+    Private ArraySize As Integer = 500
+    Private InventoryOwners(ArraySize) As String
+    Private Inventory(ArraySize) As ItemStruct
     Dim Hero As HeroStruct
     Dim Town As TownStruct
     Dim Instance As Integer
-    Dim Version As String = "1.0.0.9"
+    Dim Version As String = "1.0.1.0"
     Dim D2PIni As New IniHandler(My.Application.Info.DirectoryPath.Replace("ManagedPlugins", "") + "D2Parser.ini")
 
 #Region " Module Info "
@@ -36,7 +38,7 @@ Public Class GameModule
 
     Public ReadOnly Property ReleaseDate() As String Implements BlueVex.IGameModule.ReleaseDate
         Get
-            Return "August 2008"
+            Return "August 2009"
         End Get
     End Property
 
@@ -66,7 +68,7 @@ Public Class GameModule
 
     Public ReadOnly Property ReleaseDate1() As String Implements BlueVex.IChatModule.ReleaseDate
         Get
-            Return "August 2008"
+            Return "August 2009"
         End Get
     End Property
 
@@ -107,7 +109,7 @@ Public Class GameModule
 
     Public Function GetInventoryFromName(ByRef Name As String) As Integer
         Dim i As Integer
-        For i = 0 To 200
+        For i = 0 To ArraySize - 1
             If InventoryOwners(i) = Name Then
                 Return i
             End If
@@ -163,22 +165,22 @@ Public Class GameModule
     End Sub
 
     Sub OnItemOAction(ByVal Packet As GameServer.OwnedItemAction, ByRef Flag As BlueVex.Packet.PacketFlag) Handles Game.OnOwnedItemAction
-        'SaveToLog(Packet.ToLongInfoString())
+        SaveToLog(Packet.ToString())
         If Not (Packet.OwnerUID = Hero.UID Or Packet.OwnerUID = Hero.MercUID) Then Return
         Dim Item As GameServer.OwnedItemAction = Packet
         Dim Stopper As Boolean = False
         Dim Index As Integer = 0
-        If Item.Action = D2Data.ItemActionType.RemoveFromContainer Or Item.Action = D2Data.ItemActionType.Unequip Then
-            If Item.Action = D2Data.ItemActionType.RemoveFromContainer Then
-                If Item.Container = D2Data.ItemContainer.TraderOffer Then Return
-                If Item.Container = D2Data.ItemContainer.ForTrade Then Return
+        If Item.action = D2Data.ItemActionType.RemoveFromContainer Or Item.action = D2Data.ItemActionType.Unequip Then
+            If Item.action = D2Data.ItemActionType.RemoveFromContainer Then
+                If Item.container = D2Data.ItemContainer.TraderOffer Then Return
+                If Item.container = D2Data.ItemContainer.ForTrade Then Return
             End If
-            Dim NewInventory(200) As ItemStruct
+            Dim NewInventory(ArraySize) As ItemStruct
             Dim i As Integer
             Dim NewIndex As Integer = 0
             Dim c As Integer = 0
             For i = 0 To ItemNum - 1
-                If Inventory(i).Id = Item.UID Then
+                If Inventory(i).Id = Item.uid Then
                     c = c + 1
                 Else
                     NewInventory(NewIndex) = Inventory(i)
@@ -187,92 +189,92 @@ Public Class GameModule
             Next
             ItemNum = ItemNum - c
             Inventory = NewInventory
-        ElseIf Item.Action = D2Data.ItemActionType.PutInContainer Or Item.Action = D2Data.ItemActionType.Equip Then
-            If (AlreadyGot(Item.UID)) Then
+        ElseIf Item.action = D2Data.ItemActionType.PutInContainer Or Item.action = D2Data.ItemActionType.Equip Then
+            If (AlreadyGot(Item.uid)) Then
                 Return
             End If
-            If Item.Action = D2Data.ItemActionType.PutInContainer Then
-                If Item.Container = D2Data.ItemContainer.TraderOffer Then Return
-                If Item.Container = D2Data.ItemContainer.ForTrade Then Return
-                Inventory(ItemNum).X = Item.X.ToString
-                Inventory(ItemNum).Y = Item.Y.ToString
-                Inventory(ItemNum).Container = Item.Container.ToString
+            If Item.action = D2Data.ItemActionType.PutInContainer Then
+                If Item.container = D2Data.ItemContainer.TraderOffer Then Return
+                If Item.container = D2Data.ItemContainer.ForTrade Then Return
+                Inventory(ItemNum).X = Item.x.ToString
+                Inventory(ItemNum).Y = Item.y.ToString
+                Inventory(ItemNum).Container = Item.container.ToString
             End If
-            If Item.Action = D2Data.ItemActionType.Equip Then
+            If Item.action = D2Data.ItemActionType.Equip Then
                 Inventory(ItemNum).OwnerType = Item.OwnerType.ToString
-                Inventory(ItemNum).Location = Item.Location.ToString
+                Inventory(ItemNum).Location = Item.location.ToString
             End If
-            If Not Item.BaseItem Is Nothing And Not Item.BaseItem.Name Is Nothing Then
-                Inventory(ItemNum).BaseItemName = Item.BaseItem.Name
+            If Not Item.baseItem Is Nothing And Not Item.baseItem.Name Is Nothing Then
+                Inventory(ItemNum).BaseItemName = Item.baseItem.Name
             End If
 
-            Inventory(ItemNum).Color = Item.Color.ToString
-            Inventory(ItemNum).Id = Item.UID
+            Inventory(ItemNum).Color = Item.color.ToString
+            Inventory(ItemNum).Id = Item.uid
 
-            If Not Item.Runeword Is Nothing Then
-                Inventory(ItemNum).Runeword = Item.Runeword.Name
-                Inventory(ItemNum).RunewordID = Item.RunewordID.ToString
-                Inventory(ItemNum).RunewordParam = Item.RunewordParam.ToString
+            If Not Item.runeword Is Nothing Then
+                Inventory(ItemNum).Runeword = Item.runeword.Name
+                Inventory(ItemNum).RunewordID = Item.runewordID.ToString
+                Inventory(ItemNum).RunewordParam = Item.runewordParam.ToString
             Else
                 Inventory(ItemNum).Runeword = "-1"
             End If
             Log(Inventory(ItemNum).Runeword)
 
-            Inventory(ItemNum).Quality = Quality2String(Item.Quality)
-            Inventory(ItemNum).Level = Item.Level.ToString
-            Inventory(ItemNum).Image = Item.Graphic.ToString
+            Inventory(ItemNum).Quality = Quality2String(Item.quality)
+            Inventory(ItemNum).Level = Item.level.ToString
+            Inventory(ItemNum).Image = Item.graphic.ToString
 
-            If (Item.Stats.Count > 0) Then
-                For i As Integer = 0 To Item.Stats.Count - 1
-                    Inventory(ItemNum).Stats += Item.Stats.Item(i).ToString + ";"
+            If (Item.stats.Count > 0) Then
+                For i As Integer = 0 To Item.stats.Count - 1
+                    Inventory(ItemNum).Stats += Item.stats.Item(i).ToString + ";"
                 Next i
             End If
 
-            If Not Item.Mods Is Nothing Then
-                If (Item.Mods.Count > 0) Then
-                    For i As Integer = 0 To Item.Mods.Count - 1
-                        Inventory(ItemNum).Mods += Item.Mods.Item(i).ToString + ";"
+            If Not Item.mods Is Nothing Then
+                If (Item.mods.Count > 0) Then
+                    For i As Integer = 0 To Item.mods.Count - 1
+                        Inventory(ItemNum).Mods += Item.mods.Item(i).ToString + ";"
                     Next i
                 End If
             End If
-            If (Item.Quality = D2Data.ItemQuality.Unique) Then
-                If Item.UniqueItem Is Nothing Then
+            If (Item.quality = D2Data.ItemQuality.Unique) Then
+                If Item.uniqueItem Is Nothing Then
                     Inventory(ItemNum).Name = "Unidentified"
                 Else
-                    Inventory(ItemNum).Name = Item.UniqueItem.Name
+                    Inventory(ItemNum).Name = Item.uniqueItem.Name
                 End If
-            ElseIf (Item.Quality = D2Data.ItemQuality.Set) Then
-                If Item.SetItem Is Nothing Then
+            ElseIf (Item.quality = D2Data.ItemQuality.Set) Then
+                If Item.setItem Is Nothing Then
                     Inventory(ItemNum).Name = "Unidentified"
                 Else
-                    Inventory(ItemNum).Name = Item.SetItem.Name
+                    Inventory(ItemNum).Name = Item.setItem.Name
                 End If
-            ElseIf (Item.Quality = D2Data.ItemQuality.Rare) Then
+            ElseIf (Item.quality = D2Data.ItemQuality.Rare) Then
                 Inventory(ItemNum).Name = ""
-            ElseIf (Item.Quality = D2Data.ItemQuality.Crafted) Then
+            ElseIf (Item.quality = D2Data.ItemQuality.Crafted) Then
                 Inventory(ItemNum).Name = ""
             Else
-                Inventory(ItemNum).Name = Item.BaseItem.Name
+                Inventory(ItemNum).Name = Item.baseItem.Name
             End If
 
-            If Not Item.Prefix Is Nothing Then
-                Inventory(ItemNum).Prefix = ReturnLetters(Item.Prefix.Name)
-                Inventory(ItemNum).PrefixVar = ReturnNumbers(Item.Prefix.Name)
+            If Not Item.prefix Is Nothing Then
+                Inventory(ItemNum).Prefix = ReturnLetters(Item.prefix.Name)
+                Inventory(ItemNum).PrefixVar = ReturnNumbers(Item.prefix.Name)
                 Inventory(ItemNum).Name = Inventory(ItemNum).Prefix + " " + Inventory(ItemNum).Name
             End If
 
-            If Not Item.Suffix Is Nothing Then
-                If Not Item.Suffix.Name = "" Then
-                    Inventory(ItemNum).Suffix = ReturnLetters(Item.Suffix.Name)
-                    Inventory(ItemNum).SuffixVar = ReturnNumbers(Item.Suffix.Name)
-                    If (Item.Quality = D2Data.ItemQuality.Rare Or Item.Quality = D2Data.ItemQuality.Crafted) Then
+            If Not Item.suffix Is Nothing Then
+                If Not Item.suffix.Name = "" Then
+                    Inventory(ItemNum).Suffix = ReturnLetters(Item.suffix.Name)
+                    Inventory(ItemNum).SuffixVar = ReturnNumbers(Item.suffix.Name)
+                    If (Item.quality = D2Data.ItemQuality.Rare Or Item.quality = D2Data.ItemQuality.Crafted) Then
                         Inventory(ItemNum).Name = Inventory(ItemNum).Name + Inventory(ItemNum).Suffix
                     Else
                         Inventory(ItemNum).Name = Inventory(ItemNum).Name + " of " + Inventory(ItemNum).Suffix
                     End If
                 End If
             End If
-            Inventory(ItemNum).Flags = Item.Flags.ToString
+            Inventory(ItemNum).Flags = Item.flags.ToString
             Inventory(ItemNum).Name = Inventory(ItemNum).Name.Trim()
 
             Log("Item #" + ItemNum.ToString + ": " + Inventory(ItemNum).Name + " : " + Inventory(ItemNum).Id.ToString)
@@ -282,7 +284,7 @@ Public Class GameModule
         End If
     End Sub
     Sub OnItemWAction(ByVal Packet As GameServer.WorldItemAction, ByRef Flag As BlueVex.Packet.PacketFlag) Handles Game.OnWorldItemAction
-        'SaveToLog(Packet.ToLongInfoString())
+        SaveToLog(D2Packets.DataFormatter.Format(Packet))
         Dim Item As GameServer.WorldItemAction = Packet
         Dim Stopper As Boolean = False
         Dim Index As Integer = 0
@@ -396,7 +398,17 @@ Public Class GameModule
             Dim Vals As String() = AllLoginsArray(ctr).Split(",".ToCharArray()(0))
             If Vals(0).Contains(Hero.Name) Then
                 Hero.Account = Vals(1)
-                Hero.Realm = Vals(2)
+                If Vals(2).Contains("East") Then
+                    Hero.Realm = "USEast"
+                ElseIf Vals(2).Contains("West") Then
+                    Hero.Realm = "USWest"
+                ElseIf Vals(2).Contains("Asia") Then
+                    Hero.Realm = "Asia"
+                ElseIf Vals(2).Contains("Europe") Then
+                    Hero.Realm = "Europe"
+                Else
+                    Hero.Realm = "Undefined"
+                End If
             End If
         Next
         Dim Output As String = ""

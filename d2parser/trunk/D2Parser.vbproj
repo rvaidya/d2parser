@@ -55,19 +55,19 @@
   <ItemGroup>
     <Reference Include="BlueVex, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\BlueVex.dll</HintPath>
+      <HintPath>..\..\..\BlueVex 5.4\BlueVex.dll</HintPath>
     </Reference>
     <Reference Include="D2Data, Version=0.9.2605.13312, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\D2Data.dll</HintPath>
+      <HintPath>..\..\..\BlueVex 5.4\D2Data.dll</HintPath>
     </Reference>
-    <Reference Include="D2Packets, Version=0.9.3099.16161, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="D2Packets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\D2Packets.dll</HintPath>
+      <HintPath>..\..\..\BlueVex 5.4\D2Packets.dll</HintPath>
     </Reference>
     <Reference Include="ETUtils, Version=1.0.2610.21028, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ETUtils.dll</HintPath>
+      <HintPath>..\..\..\BlueVex 5.4\ETUtils.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
